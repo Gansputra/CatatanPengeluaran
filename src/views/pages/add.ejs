@@ -1,0 +1,23 @@
+<div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tambah Pengeluaran</h2>
+    <form action="/add" method="POST" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium mb-1">Keterangan</label>
+            <input type="text" name="title" required class="w-full border p-2 rounded-lg">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1">Jumlah (Rp)</label>
+            <input type="number" name="amount" required class="w-full border p-2 rounded-lg">
+        </div>
+        <div>
+            <label class="block text-sm font-medium mb-1">Kategori</label>
+            <select name="category" class="w-full border p-2 rounded-lg">
+                <option value="Makanan">Makanan</option>
+                <option value="Transportasi">Transportasi</option>
+                <option value="Hiburan">Hiburan</option>
+                <option value="Lainnya">Lainnya</option>
+            </select>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700">Simpan</button>
+    </form>
+</div>
