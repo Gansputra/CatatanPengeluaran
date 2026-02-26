@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* 
-  Modern CSS Reset & Normalization 
+/*
+  Modern CSS Reset & Normalization
   Integrated with Tailwind CSS 4
 */
 
@@ -12,18 +12,17 @@
 
 @layer base {
     :root {
-        /* Premium Color Palette (HSL) */
-        --primary: 230 75% 60%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 215 25% 27%;
-        --background: 210 40% 98%;
-        --foreground: 224 71.4% 4.1%;
+        /* Premium Slate & Indigo Palette */
+        --primary: 238 100% 63%;
+        /* Vivid Indigo */
+        --primary-hover: 238 100% 55%;
+        --background: 226 57% 97%;
+        /* Soft Blue-Gray tint */
         --card: 0 0% 100%;
-        --card-foreground: 224 71.4% 4.1%;
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 221.2 83.2% 53.3%;
-        --radius: 0.75rem;
+        --card-foreground: 224 71% 4%;
+        --border: 220 13% 91%;
+        --ring: 238 100% 63%;
+        --radius: 1rem;
     }
 
     *,
@@ -39,8 +38,12 @@
     }
 
     body {
-        @apply antialiased text-slate-900 bg-slate-50;
+        @apply antialiased text-slate-900 bg-[#f8fafc];
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background-image:
+            radial-gradient(at 0% 0%, hsla(238, 100%, 96%, 1) 0, transparent 50%),
+            radial-gradient(at 50% 0%, hsla(200, 100%, 96%, 1) 0, transparent 50%);
+        background-attachment: fixed;
         margin: 0;
         padding: 0;
         min-height: 100vh;
@@ -61,26 +64,35 @@
         max-width: 100%;
         height: auto;
     }
-
-    /* Custom Scrollbar for Premium Feel */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
-    }
 }
 
 @layer components {
-
-    /* Common utility for premium glass effect */
     .glass {
-        @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+        @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.07)];
     }
+
+    .glass-dark {
+        @apply bg-slate-900/80 backdrop-blur-xl border border-slate-700/30 shadow-2xl;
+    }
+
+    .nav-link {
+        @apply text-slate-600 hover:text-indigo-600 font-medium transition-all duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-indigo-600 after:transition-all hover:after:w-full;
+    }
+
+    .btn-primary {
+        @apply bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 active:scale-95 transition-all duration-200;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full border-4 border-transparent bg-clip-content hover:bg-slate-300;
 }

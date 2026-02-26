@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Expense Tracker</title>
     <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body class="bg-slate-50 text-slate-900 min-vh-100 flex flex-col">
     <%- include('../partials/navbar') %>
-    
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
-        <%- body %>
-    </main>
 
-    <footer class="py-6 border-t border-slate-200 text-center text-slate-400 text-sm">
-        &copy; <%= new Date().getFullYear() %> Smart Expense Tracker. Built for speed.
-    </footer>
+        <main class="flex-grow container mx-auto px-6 max-w-7xl">
+            <%- body %>
+        </main>
+
+        <footer class="py-6 border-t border-slate-200 text-center text-slate-400 text-sm">
+            &copy; <%= new Date().getFullYear() %> Smart Expense Tracker. Built for speed.
+        </footer>
 </body>
+
 </html>
