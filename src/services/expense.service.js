@@ -1,11 +1,21 @@
 const supabase = require('../config/supabase');
 
 const TransactionService = {
-    async getAllTransactions() {
-        const { data, error } = await supabase
+    async getAllTransactions(filters = {}) {
+        let query = supabase
             .from('transactions')
             .select('*, categories(name, icon, color)')
             .order('date', { ascending: false });
+
+        if (filters.search) {
+            query = query.ilike('note', `%${filters.search}%`);
+        }
+
+        if (filters.category_id) {
+            query = query.eq('category_id', filters.category_id);
+        }
+
+        const { data, error } = await query;
         if (error) throw error;
         return data;
     },

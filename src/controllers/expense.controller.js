@@ -4,7 +4,11 @@ const formatter = require('../utils/formatter');
 const TransactionController = {
     async renderIndex(req, res) {
         try {
-            const transactions = await TransactionService.getAllTransactions();
+            const { search, category } = req.query;
+            const [transactions, categories] = await Promise.all([
+                TransactionService.getAllTransactions({ search, category_id: category }),
+                TransactionService.getAllCategories()
+            ]);
 
             // Hitung total (Income - Expense)
             const stats = transactions.reduce((acc, curr) => {
@@ -18,6 +22,8 @@ const TransactionController = {
 
             res.render('pages/index', {
                 transactions,
+                categories,
+                filters: { search, category },
                 stats: {
                     income: formatter.formatCurrency(stats.income),
                     expense: formatter.formatCurrency(stats.expense),

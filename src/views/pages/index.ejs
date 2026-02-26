@@ -35,6 +35,38 @@
         </div>
     </div>
 
+    <!-- Filter & Search Bar -->
+    <div class="glass p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-between">
+        <form action="/" method="GET" class="flex flex-col md:flex-row gap-4 w-full">
+            <!-- Search Input -->
+            <div class="relative flex-grow">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                <input type="text" name="search" placeholder="Search transactions..."
+                    value="<%= filters.search || '' %>"
+                    class="w-full bg-slate-50/50 border-none ring-1 ring-slate-200 rounded-xl py-2.5 pl-11 pr-4 focus:ring-2 focus:ring-indigo-500 transition-all text-sm font-medium">
+            </div>
+
+            <!-- Category Filter -->
+            <div class="flex gap-4">
+                <select name="category" onchange="this.form.submit()"
+                    class="bg-slate-50/50 border-none ring-1 ring-slate-200 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-indigo-500 transition-all text-sm font-medium min-w-[160px] appearance-none cursor-pointer">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(cat=> { %>
+                        <option value="<%= cat.id %>" <%=filters.category===cat.id ? 'selected' : '' %>>
+                            <%= cat.name %>
+                        </option>
+                        <% }) %>
+                </select>
+
+                <a href="/"
+                    class="flex items-center justify-center p-2.5 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
+                    title="Reset Filters">
+                    🔄
+                </a>
+            </div>
+        </form>
+    </div>
+
     <!-- Recent Transactions -->
     <div class="glass rounded-3xl overflow-hidden">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50">
