@@ -1,38 +1,38 @@
 const supabase = require('../config/supabase');
 
-const ExpenseService = {
-    async getAllExpenses() {
+const TransactionService = {
+    async getAllTransactions() {
         const { data, error } = await supabase
-            .from('expenses')
-            .select('*')
+            .from('transactions')
+            .select('*, categories(name, icon, color)')
             .order('date', { ascending: false });
         if (error) throw error;
         return data;
     },
 
-    async getExpenseById(id) {
+    async getTransactionById(id) {
         const { data, error } = await supabase
-            .from('expenses')
-            .select('*')
+            .from('transactions')
+            .select('*, categories(name, icon, color)')
             .eq('id', id)
             .single();
         if (error) throw error;
         return data;
     },
 
-    async createExpense(expenseData) {
-        // expenseData: { amount, category, note, date }
+    async createTransaction(transactionData) {
+        // transactionData: { amount, type, category_id, note, date }
         const { data, error } = await supabase
-            .from('expenses')
-            .insert([expenseData])
+            .from('transactions')
+            .insert([transactionData])
             .select();
         if (error) throw error;
         return data;
     },
 
-    async updateExpense(id, updateData) {
+    async updateTransaction(id, updateData) {
         const { data, error } = await supabase
-            .from('expenses')
+            .from('transactions')
             .update(updateData)
             .eq('id', id)
             .select();
@@ -40,14 +40,23 @@ const ExpenseService = {
         return data;
     },
 
-    async deleteExpense(id) {
+    async deleteTransaction(id) {
         const { error } = await supabase
-            .from('expenses')
+            .from('transactions')
             .delete()
             .eq('id', id);
         if (error) throw error;
         return true;
+    },
+
+    async getAllCategories() {
+        const { data, error } = await supabase
+            .from('categories')
+            .select('*')
+            .order('name', { ascending: true });
+        if (error) throw error;
+        return data;
     }
 };
 
-module.exports = ExpenseService;
+module.exports = TransactionService;
