@@ -4,7 +4,7 @@
         <!-- Balance Card -->
         <div class="glass p-6 rounded-3xl relative overflow-hidden group">
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <span class="text-6xl text-indigo-600">🏛️</span>
+                <i data-lucide="layers" class="w-16 h-16 text-indigo-600"></i>
             </div>
             <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Balance</h3>
             <p class="text-3xl font-bold text-slate-900">
@@ -15,7 +15,7 @@
         <!-- Income Card -->
         <div class="glass p-6 rounded-3xl relative overflow-hidden group border-l-4 border-emerald-500">
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <span class="text-6xl text-emerald-600">📈</span>
+                <i data-lucide="trending-up" class="w-16 h-16 text-emerald-600"></i>
             </div>
             <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Income</h3>
             <p class="text-3xl font-bold text-emerald-600">
@@ -26,7 +26,7 @@
         <!-- Expense Card -->
         <div class="glass p-6 rounded-3xl relative overflow-hidden group border-l-4 border-rose-500">
             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <span class="text-6xl text-rose-600">📉</span>
+                <i data-lucide="trending-down" class="w-16 h-16 text-rose-600"></i>
             </div>
             <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Expense</h3>
             <p class="text-3xl font-bold text-rose-600">
@@ -40,7 +40,7 @@
         <form action="/" method="GET" class="flex flex-col md:flex-row gap-4 w-full">
             <!-- Search Input -->
             <div class="relative flex-grow">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                 <input type="text" name="search" placeholder="Search transactions..."
                     value="<%= filters.search || '' %>"
                     class="w-full bg-slate-50/50 border-none ring-1 ring-slate-200 rounded-xl py-2.5 pl-11 pr-4 focus:ring-2 focus:ring-indigo-500 transition-all text-sm font-medium">
@@ -61,7 +61,7 @@
                 <a href="/"
                     class="flex items-center justify-center p-2.5 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
                     title="Reset Filters">
-                    🔄
+                    <i data-lucide="rotate-cw" class="w-4 h-4 text-slate-500"></i>
                 </a>
             </div>
         </form>
@@ -71,7 +71,7 @@
     <div class="glass rounded-3xl overflow-hidden">
         <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50">
             <h2 class="text-xl font-bold text-slate-800">Recent Transactions</h2>
-            <button class="text-indigo-600 font-semibold text-sm hover:underline">View All</button>
+            <button class="text-indigo-600 font-semibold text-sm hover:underline italic">view history</button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -88,35 +88,35 @@
                         <tr class="group hover:bg-slate-50/50 transition-colors">
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                                        style="background-color: <%= item.categories?.color %>20; color: <%= item.categories?.color %>">
-                                        <span>
-                                            <%= item.categories?.icon || '📦' %>
-                                        </span>
+                                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                                        style="background-color: <%= item.categories?.color %>15; color: <%= item.categories?.color %>">
+                                        <i data-lucide="<%= item.categories?.icon || 'box' %>" class="w-5 h-5"></i>
                                     </div>
                                     <div>
                                         <p class="font-bold text-slate-800 capitalize">
                                             <%= item.note || 'No description' %>
                                         </p>
-                                        <p class="text-xs text-slate-400 uppercase tracking-widest">
+                                        <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-black">
                                             <%= item.type %>
                                         </p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-5">
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold"
-                                    style="background-color: <%= item.categories?.color %>15; color: <%= item.categories?.color %>">
+                                <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider"
+                                    style="background-color: <%= item.categories?.color %>10; color: <%= item.categories?.color %>">
                                     <%= item.categories?.name || 'Uncategorized' %>
                                 </span>
                             </td>
-                            <td class="px-6 py-5 text-slate-500 text-sm">
+                            <td class="px-6 py-5 text-slate-500 text-sm font-medium">
                                 <%= formatter.formatDate(item.date) %>
                             </td>
                             <td
-                                class="px-6 py-5 text-right font-black <%= item.type === 'income' ? 'text-emerald-500' : 'text-slate-900' %>">
-                                <%= item.type==='expense' ? '-' : '+' %>
-                                    <%= formatter.formatCurrency(item.amount) %>
+                                class="px-6 py-5 text-right font-black <%= item.type === 'income' ? 'text-emerald-500' : 'text-slate-900 border-r-4 border-rose-500/0 group-hover:border-rose-500/100 transition-all' %>">
+                                <span class="text-xs mr-1">
+                                    <%= item.type==='expense' ? '-' : '+' %>
+                                </span>
+                                <%= formatter.formatCurrency(item.amount) %>
                             </td>
                         </tr>
                         <% }) %>
