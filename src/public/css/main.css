@@ -68,7 +68,8 @@
 
 @layer components {
     .glass {
-        @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31, 38, 135, 0.07)];
+        @apply bg-white/70 backdrop-blur-xl border border-white/40;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
     }
 
     .glass-dark {
@@ -76,11 +77,53 @@
     }
 
     .nav-link {
-        @apply text-slate-600 hover:text-indigo-600 font-medium transition-all duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-indigo-600 after:transition-all hover:after:w-full;
+        @apply text-slate-500 hover:text-indigo-600 font-semibold transition-all duration-300 relative py-1 px-2 rounded-lg hover:bg-indigo-50/50 active:scale-95;
+
+        /* Premium Underline Animation */
+        &::after {
+            content: '';
+            @apply absolute bottom-0 left-1/2 w-0 h-[2.5px] bg-indigo-600 rounded-full transition-all duration-300;
+            transform: translateX(-50%);
+        }
+
+        &:hover::after {
+            @apply w-1/2;
+        }
     }
 
     .btn-primary {
-        @apply bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 active:scale-95 transition-all duration-200;
+        @apply bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:shadow-indigo-300 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 relative overflow-hidden;
+
+        /* Subtle Shine Effect */
+        &::before {
+            content: '';
+            @apply absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-500;
+        }
+
+        &:hover::before {
+            @apply left-full;
+        }
+    }
+
+    .logo-hover {
+        @apply flex items-center gap-2 cursor-pointer;
+
+        &:hover i {
+            @apply rotate-[15deg] scale-110;
+            filter: drop-shadow(0 0 8px rgba(79, 70, 229, 0.3));
+        }
+
+        & i {
+            @apply transition-all duration-500;
+        }
+
+        & span {
+            @apply transition-all duration-300;
+        }
+
+        &:hover span {
+            @apply tracking-wider;
+        }
     }
 }
 
