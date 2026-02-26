@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const ExpenseController = require('../controllers/expense.controller');
+const TransactionController = require('../controllers/expense.controller');
 
-router.get('/', ExpenseController.renderIndex);
-router.get('/add', (req, res) => res.render('pages/add'));
-router.post('/add', ExpenseController.addExpense);
+router.get('/', TransactionController.renderIndex);
+router.get('/add', TransactionController.renderAddPage);
+router.post('/add', TransactionController.addTransaction);
 
 module.exports = router;

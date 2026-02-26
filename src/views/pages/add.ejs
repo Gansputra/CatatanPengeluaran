@@ -1,23 +1,89 @@
-<div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-md">
-    <h2 class="text-2xl font-bold mb-6 text-center">Tambah Pengeluaran</h2>
-    <form action="/add" method="POST" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium mb-1">Keterangan</label>
-            <input type="text" name="title" required class="w-full border p-2 rounded-lg">
+<div class="max-w-xl mx-auto">
+    <div class="glass p-8 rounded-3xl relative overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-8">
+            <div
+                class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-indigo-200">
+                ✨
+            </div>
+            <div>
+                <h2 class="text-2xl font-black text-slate-800">Add Transaction</h2>
+                <p class="text-sm text-slate-400">Track your cashflow with ease</p>
+            </div>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Jumlah (Rp)</label>
-            <input type="number" name="amount" required class="w-full border p-2 rounded-lg">
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Kategori</label>
-            <select name="category" class="w-full border p-2 rounded-lg">
-                <option value="Makanan">Makanan</option>
-                <option value="Transportasi">Transportasi</option>
-                <option value="Hiburan">Hiburan</option>
-                <option value="Lainnya">Lainnya</option>
-            </select>
-        </div>
-        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700">Simpan</button>
-    </form>
+
+        <form action="/add" method="POST" class="space-y-6">
+            <!-- Type Switcher -->
+            <div class="grid grid-cols-2 gap-4 p-1.5 bg-slate-100 rounded-2xl">
+                <label class="cursor-pointer">
+                    <input type="radio" name="type" value="expense" checked class="hidden peer">
+                    <div
+                        class="text-center py-2.5 rounded-xl font-bold text-sm transition-all peer-checked:bg-white peer-checked:text-rose-600 peer-checked:shadow-sm text-slate-500">
+                        Expense
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="type" value="income" class="hidden peer">
+                    <div
+                        class="text-center py-2.5 rounded-xl font-bold text-sm transition-all peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm text-slate-500">
+                        Income
+                    </div>
+                </label>
+            </div>
+
+            <!-- Amount Input -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Amount
+                    (IDR)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">Rp</span>
+                    <input type="number" name="amount" required placeholder="0"
+                        class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500 transition-all font-black text-xl">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Category Select -->
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Category</label>
+                    <select name="category_id" required
+                        class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-4 focus:ring-2 focus:ring-indigo-500 transition-all font-medium appearance-none">
+                        <% categories.forEach(cat=> { %>
+                            <option value="<%= cat.id %>">
+                                <%= cat.icon %>
+                                    <%= cat.name %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+
+                <!-- Date Input -->
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Date</label>
+                    <input type="date" name="date" value="<%= new Date().toISOString().split('T')[0] %>" required
+                        class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-4 focus:ring-2 focus:ring-indigo-500 transition-all font-medium">
+                </div>
+            </div>
+
+            <!-- Note Input -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Note /
+                    Description</label>
+                <textarea name="note" placeholder="What was this for?" rows="3"
+                    class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-4 focus:ring-2 focus:ring-indigo-500 transition-all font-medium"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary w-full py-5 text-lg shadow-xl shadow-indigo-100 mt-4">
+                Save Transaction
+            </button>
+        </form>
+
+        <a href="/"
+            class="block text-center mt-6 text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors">
+            Cancel and Go Back
+        </a>
+    </div>
 </div>

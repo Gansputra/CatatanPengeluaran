@@ -1,29 +1,95 @@
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white p-6 rounded-xl shadow-md mb-6">
-        <h2 class="text-gray-500 text-sm uppercase">Total Pengeluaran</h2>
-        <p class="text-3xl font-bold text-red-500"><%= total %></p>
+<div class="space-y-8">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Balance Card -->
+        <div class="glass p-6 rounded-3xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                <span class="text-6xl text-indigo-600">🏛️</span>
+            </div>
+            <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Balance</h3>
+            <p class="text-3xl font-bold text-slate-900">
+                <%= stats.balance %>
+            </p>
+        </div>
+
+        <!-- Income Card -->
+        <div class="glass p-6 rounded-3xl relative overflow-hidden group border-l-4 border-emerald-500">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                <span class="text-6xl text-emerald-600">📈</span>
+            </div>
+            <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Income</h3>
+            <p class="text-3xl font-bold text-emerald-600">
+                <%= stats.income %>
+            </p>
+        </div>
+
+        <!-- Expense Card -->
+        <div class="glass p-6 rounded-3xl relative overflow-hidden group border-l-4 border-rose-500">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                <span class="text-6xl text-rose-600">📉</span>
+            </div>
+            <h3 class="text-slate-500 font-medium text-sm mb-1 uppercase tracking-wider">Total Expense</h3>
+            <p class="text-3xl font-bold text-rose-600">
+                <%= stats.expense %>
+            </p>
+        </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <table class="w-full text-left">
-            <thead class="bg-gray-50 border-b">
-                <tr>
-                    <th class="p-4">Tanggal</th>
-                    <th class="p-4">Keterangan</th>
-                    <th class="p-4">Kategori</th>
-                    <th class="p-4 text-right">Jumlah</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% expenses.forEach(item => { %>
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-4 text-sm"><%= formatter.formatDate(item.created_at) %></td>
-                    <td class="p-4 font-medium"><%= item.title %></td>
-                    <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs"><%= item.category %></span></td>
-                    <td class="p-4 text-right font-bold"><%= formatter.formatCurrency(item.amount) %></td>
-                </tr>
-                <% }) %>
-            </tbody>
-        </table>
+    <!-- Recent Transactions -->
+    <div class="glass rounded-3xl overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50">
+            <h2 class="text-xl font-bold text-slate-800">Recent Transactions</h2>
+            <button class="text-indigo-600 font-semibold text-sm hover:underline">View All</button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-slate-400 text-sm uppercase tracking-tighter">
+                        <th class="px-6 py-4 font-medium">Transaction</th>
+                        <th class="px-6 py-4 font-medium">Category</th>
+                        <th class="px-6 py-4 font-medium">Date</th>
+                        <th class="px-6 py-4 font-medium text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    <% transactions.forEach(item=> { %>
+                        <tr class="group hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                                        style="background-color: <%= item.categories?.color %>20; color: <%= item.categories?.color %>">
+                                        <span>
+                                            <%= item.categories?.icon || '📦' %>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-800 capitalize">
+                                            <%= item.note || 'No description' %>
+                                        </p>
+                                        <p class="text-xs text-slate-400 uppercase tracking-widest">
+                                            <%= item.type %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                    style="background-color: <%= item.categories?.color %>15; color: <%= item.categories?.color %>">
+                                    <%= item.categories?.name || 'Uncategorized' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-5 text-slate-500 text-sm">
+                                <%= formatter.formatDate(item.date) %>
+                            </td>
+                            <td
+                                class="px-6 py-5 text-right font-black <%= item.type === 'income' ? 'text-emerald-500' : 'text-slate-900' %>">
+                                <%= item.type==='expense' ? '-' : '+' %>
+                                    <%= formatter.formatCurrency(item.amount) %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
