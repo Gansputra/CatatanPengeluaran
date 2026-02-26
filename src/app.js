@@ -1,7 +1,10 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
-require('dotenv').config();
+const result = require('dotenv').config();
+if (result.error) {
+    console.warn('\x1b[33m%s\x1b[0m', '⚠️  WARNING: File .env tidak ditemukan! Silakan buat file .env terlebih dahulu.');
+}
 
 const app = express();
 const expenseRoutes = require('./routes/expense.routes');
