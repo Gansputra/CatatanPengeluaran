@@ -27,6 +27,7 @@
     html {
         scroll-behavior: smooth;
         -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
     }
 
     body {
@@ -39,6 +40,7 @@
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        overflow-x: hidden;
     }
 }
 
@@ -89,6 +91,10 @@
         &:hover::after {
             @apply translate-x-full;
         }
+    }
+
+    .btn-primary-sm {
+        @apply bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-indigo-100 hover:bg-indigo-700 hover:shadow-indigo-200 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2;
     }
 
     .btn-secondary {

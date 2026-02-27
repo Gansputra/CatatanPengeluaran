@@ -7,7 +7,21 @@
                 ExpenseTracker
             </span>
         </a>
-        <div class="flex items-center gap-8">
+
+        <!-- Hamburger Button -->
+        <button id="mobile-menu-button"
+            class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 p-2 focus:outline-none z-50 group transition-all duration-300 rounded-xl hover:bg-slate-100/50"
+            aria-label="Toggle Menu">
+            <span
+                class="w-6 h-0.5 bg-slate-600 rounded-full transition-all duration-300 group-[.active]:rotate-45 group-[.active]:translate-y-2"></span>
+            <span
+                class="w-6 h-0.5 bg-slate-600 rounded-full transition-all duration-300 group-[.active]:opacity-0"></span>
+            <span
+                class="w-6 h-0.5 bg-slate-600 rounded-full transition-all duration-300 group-[.active]:-rotate-45 group-[.active]:-translate-y-2"></span>
+        </button>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-6">
             <a href="/" class="nav-link flex items-center gap-2 font-medium">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                 Dashboard
@@ -20,9 +34,88 @@
                 <i data-lucide="target" class="w-4 h-4"></i>
                 Savings
             </a>
-            <a href="/add" class="btn-primary font-medium">
+            <a href="/add" class="btn-primary-sm font-medium ml-2">
+                Add Transaction
+            </a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed top-0 left-0 w-full h-[100dvh] bg-white/95 backdrop-blur-2xl z-40 md:hidden flex items-center justify-center transition-all duration-500 ease-out opacity-0 pointer-events-none translate-x-full">
+        <!-- Content Wrapper with Centering -->
+        <div class="flex flex-col items-center justify-center gap-8 w-full px-10 transform transition-all duration-700 delay-150 translate-x-10 opacity-0"
+            id="mobile-menu-content">
+            <a href="/"
+                class="mobile-nav-link text-xl font-semibold text-slate-700 hover:text-indigo-600 transition-all duration-300 flex items-center gap-4 hover:translate-x-2 w-full max-w-[280px] p-4 rounded-2xl hover:bg-slate-50">
+                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+                    <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                </div>
+                <span>Dashboard</span>
+            </a>
+            <a href="/analytics"
+                class="mobile-nav-link text-xl font-semibold text-slate-700 hover:text-indigo-600 transition-all duration-300 flex items-center gap-4 hover:translate-x-2 w-full max-w-[280px] p-4 rounded-2xl hover:bg-slate-50">
+                <div class="p-3 bg-violet-50 rounded-xl text-violet-600">
+                    <i data-lucide="pie-chart" class="w-6 h-6"></i>
+                </div>
+                <span>Analytics</span>
+            </a>
+            <a href="/savings"
+                class="mobile-nav-link text-xl font-semibold text-slate-700 hover:text-indigo-600 transition-all duration-300 flex items-center gap-4 hover:translate-x-2 w-full max-w-[280px] p-4 rounded-2xl hover:bg-slate-50">
+                <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+                    <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+                <span>Savings</span>
+            </a>
+            <a href="/add"
+                class="btn-primary flex items-center justify-center gap-3 text-lg w-full max-w-[280px] py-5 mt-4 shadow-xl shadow-indigo-100">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
                 Add Transaction
             </a>
         </div>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuContent = document.getElementById('mobile-menu-content');
+        const body = document.body;
+
+        const toggleMenu = () => {
+            const isActive = menuBtn.classList.toggle('active');
+            body.classList.toggle('overflow-hidden');
+
+            if (isActive) {
+                // Open Menu
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto', 'translate-x-0');
+
+                // Content Animation
+                mobileMenuContent.classList.remove('translate-x-10', 'opacity-0');
+                mobileMenuContent.classList.add('translate-x-0', 'opacity-100');
+            } else {
+                // Close Menu
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full');
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto', 'translate-x-0');
+
+                // Reset Content Animation
+                mobileMenuContent.classList.add('translate-x-10', 'opacity-0');
+                mobileMenuContent.classList.remove('translate-x-0', 'opacity-100');
+            }
+        };
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking links
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link, #mobile-menu .btn-primary');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuBtn.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+    });
+</script>
