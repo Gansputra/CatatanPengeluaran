@@ -48,15 +48,86 @@
 
             <!-- Category Filter -->
             <div class="flex gap-4">
-                <select name="category" onchange="this.form.submit()"
-                    class="bg-slate-50/50 border-none ring-1 ring-slate-200 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-indigo-500 transition-all text-sm font-medium min-w-[160px] appearance-none cursor-pointer">
-                    <option value="">All Categories</option>
-                    <% categories.forEach(cat=> { %>
-                        <option value="<%= cat.id %>" <%=filters.category===cat.id ? 'selected' : '' %>>
-                            <%= cat.name %>
-                        </option>
-                        <% }) %>
-                </select>
+                <div class="relative group" id="filterCategoryGroup">
+                    <input type="hidden" name="category" id="filterCategoryId" value="<%= filters.category || '' %>">
+                    <div id="filterCategoryTrigger"
+                        class="bg-slate-50/50 border-none ring-1 ring-slate-200 rounded-xl py-2.5 pl-4 pr-10 focus-within:ring-2 focus-within:ring-indigo-500 transition-all text-sm font-medium min-w-[200px] cursor-pointer flex items-center justify-between">
+                        <div class="flex items-center gap-2" id="filterSelectedDisplay">
+                            <% const currentCat=categories.find(c=> c.id === filters.category); %>
+                                <% if (currentCat) { %>
+                                    <div class="w-6 h-6 rounded flex items-center justify-center text-white"
+                                        style="background-color: <%= currentCat.color %>">
+                                        <i data-lucide="<%= currentCat.icon %>" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    <span class="text-slate-700">
+                                        <%= currentCat.name %>
+                                    </span>
+                                    <% } else { %>
+                                        <i data-lucide="filter" class="w-4 h-4 text-slate-400"></i>
+                                        <span class="text-slate-400">All Categories</span>
+                                        <% } %>
+                        </div>
+                        <i data-lucide="chevron-down"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none transition-transform group-[.active]/trigger:-rotate-180"></i>
+                    </div>
+
+                    <!-- Dropdown Content -->
+                    <div id="filterCategoryDropdown"
+                        class="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 p-1.5 z-[60] hidden min-w-[220px] animate-in slide-in-from-top-2 duration-200">
+                        <div class="max-h-[280px] overflow-y-auto custom-scrollbar space-y-0.5">
+                            <div class="filter-option flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition-all"
+                                data-id="">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400">
+                                    <i data-lucide="layers" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-slate-600 font-medium">All Categories</span>
+                            </div>
+                            <% categories.forEach(cat=> { %>
+                                <div class="filter-option flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 cursor-pointer transition-all"
+                                    data-id="<%= cat.id %>" data-name="<%= cat.name %>" data-icon="<%= cat.icon %>"
+                                    data-color="<%= cat.color %>">
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+                                        style="background-color: <%= cat.color %>">
+                                        <i data-lucide="<%= cat.icon %>" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="font-medium text-slate-700">
+                                        <%= cat.name %>
+                                    </span>
+                                </div>
+                                <% }) %>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const trigger = document.getElementById('filterCategoryTrigger');
+                            const dropdown = document.getElementById('filterCategoryDropdown');
+                            const hiddenInput = document.getElementById('filterCategoryId');
+                            const options = document.querySelectorAll('.filter-option');
+                            const form = trigger.closest('form');
+
+                            trigger.addEventListener('click', () => {
+                                dropdown.classList.toggle('hidden');
+                                trigger.closest('.relative').classList.toggle('active');
+                            });
+
+                            options.forEach(option => {
+                                option.addEventListener('click', () => {
+                                    hiddenInput.value = option.dataset.id;
+                                    form.submit();
+                                });
+                            });
+
+                            document.addEventListener('click', (e) => {
+                                if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                                    dropdown.classList.add('hidden');
+                                    trigger.closest('.relative').classList.remove('active');
+                                }
+                            });
+                        });
+                    </script>
+                </div>
 
                 <a href="/"
                     class="flex items-center justify-center p-2.5 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
