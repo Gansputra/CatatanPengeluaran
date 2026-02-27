@@ -66,6 +66,14 @@ const TransactionService = {
             .order('name', { ascending: true });
         if (error) throw error;
         return data;
+    },
+
+    async getAllBudgets() {
+        const { data, error } = await supabase
+            .from('budgets')
+            .select('*, categories(name, icon, color)');
+        if (error) throw error;
+        return data;
     }
 };
 

@@ -49,18 +49,45 @@ const TransactionController = {
 
     async renderAnalytics(req, res) {
         try {
-            const transactions = await TransactionService.getAllTransactions();
+            const [transactions, budgets] = await Promise.all([
+                TransactionService.getAllTransactions(),
+                TransactionService.getAllBudgets()
+            ]);
 
-            // 1. Data for Category Chart (Expenses only)
-            const categoryData = transactions
-                .filter(t => t.type === 'expense')
+            // Get current month and year for filtering
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            // 1. Data for Budget Tracking (Current Month Expenses)
+            const budgetMonthYear = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
+
+            const currentMonthBudgets = budgets.filter(b => b.month_year === budgetMonthYear);
+
+            const monthlyCategorySpending = transactions
+                .filter(t => {
+                    const tDate = new Date(t.date);
+                    return t.type === 'expense' &&
+                        tDate.getMonth() === currentMonth &&
+                        tDate.getFullYear() === currentYear;
+                })
                 .reduce((acc, curr) => {
-                    const catName = curr.categories?.name || 'Other';
-                    acc[catName] = (acc[catName] || 0) + Number(curr.amount);
+                    const catId = curr.category_id;
+                    acc[catId] = (acc[catId] || 0) + Number(curr.amount);
                     return acc;
                 }, {});
 
-            // 2. Data for Weekly Trend (Last 7 days)
+            // Map budgets with current spending
+            const budgetData = currentMonthBudgets.map(b => ({
+                id: b.id,
+                categoryName: b.categories?.name || 'Other',
+                categoryIcon: b.categories?.icon || 'tag',
+                categoryColor: b.categories?.color || '#64748b',
+                limit: Number(b.amount_limit),
+                spent: monthlyCategorySpending[b.category_id] || 0
+            }));
+
+            // 2. Data for Weekly Trend (Keep it for context or future use if needed, but primarily budget focus now)
             const dailyData = transactions.reduce((acc, curr) => {
                 const date = curr.date;
                 if (!acc[date]) acc[date] = { income: 0, expense: 0 };
@@ -70,7 +97,7 @@ const TransactionController = {
             }, {});
 
             res.render('pages/analytics', {
-                categoryData,
+                budgetData,
                 dailyData: JSON.stringify(dailyData),
                 formatter
             });
