@@ -52,3 +52,16 @@ CREATE TABLE IF NOT EXISTS savings_goals (
     color TEXT DEFAULT '#4f46e5',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- 6. Enable RLS on all tables
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE budgets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE savings_goals ENABLE ROW LEVEL SECURITY;
+
+-- 7. Add Public Access Policies (Allow all operations for now)
+-- Note: If you add Auth later, change 'true' to 'auth.uid() = user_id'
+CREATE POLICY "Allow public access" ON categories FOR ALL USING (true);
+CREATE POLICY "Allow public access" ON transactions FOR ALL USING (true);
+CREATE POLICY "Allow public access" ON budgets FOR ALL USING (true);
+CREATE POLICY "Allow public access" ON savings_goals FOR ALL USING (true);
