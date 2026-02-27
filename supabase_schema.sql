@@ -40,3 +40,15 @@ INSERT INTO categories (name, icon, color) VALUES
 ('Salary', 'banknotes', '#22c55e'),
 ('Other', 'tag', '#64748b')
 ON CONFLICT (name) DO NOTHING;
+
+-- 5. Table for Savings Goals
+CREATE TABLE IF NOT EXISTS savings_goals (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    target_amount DECIMAL(12, 2) NOT NULL,
+    current_amount DECIMAL(12, 2) DEFAULT 0,
+    target_date DATE,
+    icon TEXT DEFAULT 'target',
+    color TEXT DEFAULT '#4f46e5',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);

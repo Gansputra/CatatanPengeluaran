@@ -105,6 +105,43 @@ const TransactionService = {
             if (error) throw error;
             return data;
         }
+    },
+
+    async getAllSavingsGoals() {
+        const { data, error } = await supabase
+            .from('savings_goals')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+        return data;
+    },
+
+    async createSavingsGoal(goalData) {
+        const { data, error } = await supabase
+            .from('savings_goals')
+            .insert([goalData])
+            .select();
+        if (error) throw error;
+        return data;
+    },
+
+    async updateSavingsGoalProgress(id, amount) {
+        const { data, error } = await supabase
+            .from('savings_goals')
+            .update({ current_amount: amount })
+            .eq('id', id)
+            .select();
+        if (error) throw error;
+        return data;
+    },
+
+    async deleteSavingsGoal(id) {
+        const { error } = await supabase
+            .from('savings_goals')
+            .delete()
+            .eq('id', id);
+        if (error) throw error;
+        return true;
     }
 };
 

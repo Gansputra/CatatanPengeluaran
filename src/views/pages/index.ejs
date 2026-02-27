@@ -103,7 +103,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-5">
-                                <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider"
+                                <span class="px-3 py-1 rounded-full text-[11px] font-medium uppercase tracking-wider"
                                     style="background-color: <%= item.categories?.color %>10; color: <%= item.categories?.color %>">
                                     <%= item.categories?.name || 'Uncategorized' %>
                                 </span>
@@ -112,7 +112,7 @@
                                 <%= formatter.formatDate(item.date) %>
                             </td>
                             <td
-                                class="px-6 py-5 text-right font-black <%= item.type === 'income' ? 'text-emerald-500' : 'text-slate-900 border-r-4 border-rose-500/0 group-hover:border-rose-500/100 transition-all' %>">
+                                class="px-6 py-5 text-right font-medium <%= item.type === 'income' ? 'text-emerald-500' : 'text-slate-900 border-r-4 border-rose-500/0 group-hover:border-rose-500/100 transition-all' %>">
                                 <span class="text-xs mr-1">
                                     <%= item.type==='expense' ? '-' : '+' %>
                                 </span>

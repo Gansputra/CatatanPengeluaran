@@ -1,0 +1,210 @@
+<div class="space-y-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-medium text-slate-800">Savings Goals</h1>
+            <p class="text-slate-500">Track your target and build your future wealth</p>
+        </div>
+        <button onclick="document.getElementById('goalModal').classList.remove('hidden')"
+            class="bg-indigo-600 text-white px-5 py-2.5 rounded-2xl font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            New Goal
+        </button>
+    </div>
+
+    <!-- Goals Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% if (goals.length===0) { %>
+            <div class="col-span-full glass p-12 rounded-3xl text-center space-y-4">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+                    <i data-lucide="target" class="w-10 h-10 text-slate-400"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-medium text-slate-800">No Goals Yet</h3>
+                    <p class="text-slate-500">Start your first savings goal today, King!</p>
+                </div>
+                <button onclick="document.getElementById('goalModal').classList.remove('hidden')"
+                    class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                    Create My First Goal
+                </button>
+            </div>
+            <% } else { %>
+                <% goals.forEach(goal=> {
+                    const percentage = (goal.current_amount / goal.target_amount) * 100;
+                    const circumference = 2 * Math.PI * 40;
+                    const offset = circumference - (circumference * Math.min(percentage, 100) / 100);
+                    %>
+                    <div
+                        class="glass p-6 rounded-[2.5rem] relative overflow-hidden group hover:ring-2 ring-indigo-50 transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center"
+                                    style="background-color: <%= goal.color %>15; color: <%= goal.color %>">
+                                    <i data-lucide="<%= goal.icon %>" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-slate-800 text-lg">
+                                        <%= goal.name %>
+                                    </h4>
+                                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                                        Target: <%= formatter.formatCurrency(goal.target_amount) %>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="relative w-20 h-20 flex items-center justify-center">
+                                <svg class="w-20 h-20 transform -rotate-90">
+                                    <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="6"
+                                        fill="transparent" class="text-slate-100" />
+                                    <circle cx="40" cy="40" r="35" stroke="<%= goal.color %>" stroke-width="6"
+                                        fill="transparent" stroke-dasharray="219.9"
+                                        stroke-dashoffset="<%= 219.9 - (219.9 * Math.min(percentage, 100) / 100) %>"
+                                        stroke-linecap="round" class="transition-all duration-1000" />
+                                </svg>
+                                <span class="absolute text-xs font-bold text-slate-700">
+                                    <%= Math.round(percentage) %>%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Collected</span>
+                                <span class="font-medium text-slate-800">
+                                    <%= formatter.formatCurrency(goal.current_amount) %>
+                                </span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="openUpdateModal('<%= goal.id %>', '<%= goal.current_amount %>')"
+                                    class="flex-grow bg-slate-50 text-slate-700 py-3 rounded-2xl font-medium hover:bg-slate-100 transition-all text-sm">
+                                    Update Progress
+                                </button>
+                                <form action="/savings/<%= goal.id %>/delete" method="POST"
+                                    onsubmit="return confirm('Yakin hapus target ini, King?')" class="inline">
+                                    <button type="submit"
+                                        class="p-3 bg-slate-50 text-rose-500 rounded-2xl hover:bg-rose-50 transition-all">
+                                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                        <% } %>
+    </div>
+
+    <!-- Create Goal Modal -->
+    <div id="goalModal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass max-w-md w-full p-8 rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-medium text-slate-800">Create New Goal</h3>
+                <button onclick="document.getElementById('goalModal').classList.add('hidden')"
+                    class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                </button>
+            </div>
+
+            <form action="/savings" method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Goal Name</label>
+                    <input type="text" name="name" required placeholder="Ex: Buy PS5 or Dana Liburan"
+                        class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-slate-700">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Target
+                            Amount</label>
+                        <div class="relative">
+                            <span
+                                class="absolute left-4 top-1/2 -translate-y-1/2 font-medium text-slate-400 text-xs">Rp</span>
+                            <input type="number" name="target_amount" required placeholder="0"
+                                class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 pl-10 pr-4 focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-slate-800">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Target
+                            Date</label>
+                        <input type="date" name="target_date"
+                            class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-4 focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-slate-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Icon</label>
+                        <select name="icon"
+                            class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-slate-700">
+                            <option value="target">Target</option>
+                            <option value="presents">Gift</option>
+                            <option value="car">Car</option>
+                            <option value="home">Home</option>
+                            <option value="plane">Travel</option>
+                            <option value="gamepad-2">Gaming</option>
+                            <option value="smartphone">Phone</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Color</label>
+                        <div class="flex gap-2 p-2 bg-slate-50 rounded-2xl ring-1 ring-slate-200">
+                            <input type="color" name="color" value="#4f46e5"
+                                class="w-full h-10 bg-transparent cursor-pointer rounded-xl">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-medium text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 mt-4">
+                    Create Savings Goal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Progress Modal -->
+    <div id="updateModal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass max-w-sm w-full p-8 rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-medium text-slate-800">Update Collected</h3>
+                <button onclick="document.getElementById('updateModal').classList.add('hidden')"
+                    class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                </button>
+            </div>
+
+            <form id="updateForm" method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-slate-400 uppercase tracking-widest pl-1">Current
+                        Balance</label>
+                    <div class="relative">
+                        <span class="absolute left-6 top-1/2 -translate-y-1/2 font-medium text-slate-400">Rp</span>
+                        <input type="number" name="current_amount" id="currentAmountInput" required
+                            class="w-full bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl py-4 pl-14 pr-6 focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-2xl text-slate-800">
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-medium text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 mt-2">
+                    Update Progress
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openUpdateModal(id, currentAmount) {
+        const modal = document.getElementById('updateModal');
+        const form = document.getElementById('updateForm');
+        const input = document.getElementById('currentAmountInput');
+
+        form.action = `/savings/${id}/update`;
+        input.value = currentAmount;
+        modal.classList.remove('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) lucide.createIcons();
+    });
+</script>

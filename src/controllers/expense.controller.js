@@ -137,6 +137,56 @@ const TransactionController = {
             console.error("Add Error:", error);
             res.status(500).send(error.message);
         }
+    },
+
+    async renderSavings(req, res) {
+        try {
+            const goals = await TransactionService.getAllSavingsGoals();
+            res.render('pages/savings', { goals, formatter });
+        } catch (error) {
+            console.error("Savings Error:", error);
+            res.status(500).send(error.message);
+        }
+    },
+
+    async addSavingsGoal(req, res) {
+        try {
+            const { name, target_amount, target_date, icon, color } = req.body;
+            await TransactionService.createSavingsGoal({
+                name,
+                target_amount,
+                target_date: target_date || null,
+                icon: icon || 'target',
+                color: color || '#4f46e5'
+            });
+            res.redirect('/savings');
+        } catch (error) {
+            console.error("Add Goal Error:", error);
+            res.status(500).send(error.message);
+        }
+    },
+
+    async updateSavingsGoal(req, res) {
+        try {
+            const { id } = req.params;
+            const { current_amount } = req.body;
+            await TransactionService.updateSavingsGoalProgress(id, current_amount);
+            res.redirect('/savings');
+        } catch (error) {
+            console.error("Update Goal Error:", error);
+            res.status(500).send(error.message);
+        }
+    },
+
+    async deleteSavingsGoal(req, res) {
+        try {
+            const { id } = req.params;
+            await TransactionService.deleteSavingsGoal(id);
+            res.redirect('/savings');
+        } catch (error) {
+            console.error("Delete Goal Error:", error);
+            res.status(500).send(error.message);
+        }
     }
 };
 
