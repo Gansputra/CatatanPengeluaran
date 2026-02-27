@@ -1,4 +1,9 @@
 <div class="space-y-8">
+    <!-- Chart Data (Hidden) -->
+    <script id="chart-data" type="application/json">
+        <%- JSON.stringify(chartData) %>
+    </script>
+
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Balance Card -->
@@ -34,6 +39,118 @@
             </p>
         </div>
     </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Weekly Spending Chart -->
+        <div class="lg:col-span-2 glass p-6 rounded-3xl">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-slate-800 font-medium flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-500"></i>
+                    Weekly Spending
+                </h3>
+            </div>
+            <div class="h-[250px] relative">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Distribution -->
+        <div class="glass p-6 rounded-3xl">
+            <h3 class="text-slate-800 font-medium flex items-center gap-2 mb-6">
+                <i data-lucide="pie-chart" class="w-5 h-5 text-violet-500"></i>
+                Top Categories
+            </h3>
+            <div class="h-[250px] relative flex items-center justify-center">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Read data from JSON script tag
+            const rawData = document.getElementById('chart-data').textContent;
+            const chartData = JSON.parse(rawData);
+
+            const weeklyLabels = JSON.parse(chartData.weeklyLabels);
+            const weeklyValues = JSON.parse(chartData.weeklyValues);
+            const categoryLabels = JSON.parse(chartData.categoryLabels);
+            const categoryValues = JSON.parse(chartData.categoryValues);
+            const categoryColors = JSON.parse(chartData.categoryColors);
+
+            // Chart 1: Weekly Spending
+            const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+            new Chart(weeklyCtx, {
+                type: 'bar',
+                data: {
+                    labels: weeklyLabels,
+                    datasets: [{
+                        label: 'Spending',
+                        data: weeklyValues,
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8,
+                        barThickness: 30,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            borderRadius: 12,
+                            titleFont: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: { font: { size: 10 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Top Categories
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: categoryColors,
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: { size: 11, weight: '500' }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 
     <!-- Filter & Search Bar -->
     <div class="glass p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-between">

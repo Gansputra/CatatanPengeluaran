@@ -6,9 +6,20 @@ const TransactionController = {
         try {
             const { search, category } = req.query;
             const [transactions, categories] = await Promise.all([
-                TransactionService.getAllTransactions({ search, category_id: category }),
+                TransactionService.getAllTransactions(), // Dapatkan semua untuk chart
                 TransactionService.getAllCategories()
             ]);
+
+            // Filter transaksi untuk tabel (jika ada search/category)
+            let filteredTransactions = transactions;
+            if (search) {
+                filteredTransactions = filteredTransactions.filter(t =>
+                    t.note && t.note.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+            if (category) {
+                filteredTransactions = filteredTransactions.filter(t => t.category_id === category);
+            }
 
             // Hitung total (Income - Expense)
             const stats = transactions.reduce((acc, curr) => {
@@ -20,14 +31,55 @@ const TransactionController = {
                 return acc;
             }, { income: 0, expense: 0 });
 
+            // Data untuk Chart: Weekly Trend (7 hari terakhir)
+            const last7Days = [...Array(7)].map((_, i) => {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                return d.toISOString().split('T')[0];
+            }).reverse();
+
+            const weeklyTrend = last7Days.map(date => {
+                const dayTransactions = transactions.filter(t => t.date === date && t.type === 'expense');
+                const total = dayTransactions.reduce((sum, t) => sum + Number(t.amount), 0);
+                return total;
+            });
+
+            // Data untuk Chart: Top Categories (Bulan ini)
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            const categorySpending = transactions
+                .filter(t => {
+                    const tDate = new Date(t.date);
+                    return t.type === 'expense' &&
+                        tDate.getMonth() === currentMonth &&
+                        tDate.getFullYear() === currentYear;
+                })
+                .reduce((acc, curr) => {
+                    const catName = curr.categories?.name || 'Other';
+                    acc[catName] = (acc[catName] || 0) + Number(curr.amount);
+                    return acc;
+                }, {});
+
             res.render('pages/index', {
-                transactions,
+                transactions: filteredTransactions.slice(0, 10), // Batasi 10 transaksi terbaru untuk dashboard
                 categories,
                 filters: { search, category },
                 stats: {
                     income: formatter.formatCurrency(stats.income),
                     expense: formatter.formatCurrency(stats.expense),
                     balance: formatter.formatCurrency(stats.income - stats.expense)
+                },
+                chartData: {
+                    weeklyLabels: JSON.stringify(last7Days.map(d => formatter.formatDate(d))),
+                    weeklyValues: JSON.stringify(weeklyTrend),
+                    categoryLabels: JSON.stringify(Object.keys(categorySpending)),
+                    categoryValues: JSON.stringify(Object.values(categorySpending)),
+                    categoryColors: JSON.stringify(Object.keys(categorySpending).map(name => {
+                        const cat = categories.find(c => c.name === name);
+                        return cat ? cat.color : '#cbd5e1';
+                    }))
                 },
                 formatter
             });
