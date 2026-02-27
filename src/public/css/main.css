@@ -1,14 +1,5 @@
 @import "tailwindcss";
-
-/*
-  Modern CSS Reset & Normalization
-  Integrated with Tailwind CSS 4
-*/
-
-@font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap');
 
 @layer base {
     :root {
@@ -39,7 +30,7 @@
 
     body {
         @apply antialiased text-slate-900 bg-[#f8fafc];
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: 'Noto Sans', system-ui, -apple-system, sans-serif;
         background-image:
             radial-gradient(at 0% 0%, hsla(238, 100%, 96%, 1) 0, transparent 50%),
             radial-gradient(at 50% 0%, hsla(200, 100%, 96%, 1) 0, transparent 50%);
