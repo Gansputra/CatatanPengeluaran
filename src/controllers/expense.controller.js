@@ -49,9 +49,10 @@ const TransactionController = {
 
     async renderAnalytics(req, res) {
         try {
-            const [transactions, budgets] = await Promise.all([
+            const [transactions, budgets, categories] = await Promise.all([
                 TransactionService.getAllTransactions(),
-                TransactionService.getAllBudgets()
+                TransactionService.getAllBudgets(),
+                TransactionService.getAllCategories()
             ]);
 
             // Get current month and year for filtering
@@ -98,11 +99,31 @@ const TransactionController = {
 
             res.render('pages/analytics', {
                 budgetData,
+                categories: categories.filter(c => c.name !== 'Salary'),
                 dailyData: JSON.stringify(dailyData),
                 formatter
             });
         } catch (error) {
             console.error("Analytics Error:", error);
+            res.status(500).send(error.message);
+        }
+    },
+
+    async setBudget(req, res) {
+        try {
+            const { category_id, amount_limit } = req.body;
+            const now = new Date();
+            const month_year = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+            await TransactionService.upsertBudget({
+                category_id,
+                amount_limit,
+                month_year
+            });
+
+            res.redirect('/analytics');
+        } catch (error) {
+            console.error("Set Budget Error:", error);
             res.status(500).send(error.message);
         }
     },

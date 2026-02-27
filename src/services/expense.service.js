@@ -74,6 +74,37 @@ const TransactionService = {
             .select('*, categories(name, icon, color)');
         if (error) throw error;
         return data;
+    },
+
+    async upsertBudget(budgetData) {
+        // budgetData: { category_id, amount_limit, month_year }
+
+        // 1. Check if budget already exists for this category/month
+        const { data: existing } = await supabase
+            .from('budgets')
+            .select('id')
+            .eq('category_id', budgetData.category_id)
+            .eq('month_year', budgetData.month_year)
+            .single();
+
+        if (existing) {
+            // Update
+            const { data, error } = await supabase
+                .from('budgets')
+                .update({ amount_limit: budgetData.amount_limit })
+                .eq('id', existing.id)
+                .select();
+            if (error) throw error;
+            return data;
+        } else {
+            // Insert
+            const { data, error } = await supabase
+                .from('budgets')
+                .insert([budgetData])
+                .select();
+            if (error) throw error;
+            return data;
+        }
     }
 };
 
